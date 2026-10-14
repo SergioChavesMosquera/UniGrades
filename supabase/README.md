@@ -13,6 +13,10 @@ modelo de datos y las reglas de negocio (RN-1..RN-7 + RLS).
 3. `migrations/0003_seed.sql` — seed del catálogo público: Universidad Nacional +
    programa Ingeniería de Sistemas y Computación (4 tipologías + 47 materias de la malla
    2A74). Idempotente: si el programa ya existe, no reinserta.
+4. `migrations/0004_seed_programas.sql` — 7 carreras más de la UNAL (Química, Enfermería,
+   Geografía, Medicina Veterinaria, Diseño Gráfico, Ing. Industrial, Ing. Mecatrónica),
+   generado desde `seed-data/plantilla-malla.xlsx`. Idempotente por programa (salta los que
+   ya existen). Libre Elección no incluida; nivelación común copiada donde faltaba.
 
 > La plantilla para cargar más carreras está en `supabase/seed-data/plantilla-malla.xlsx`
 > (Excel con listas desplegables + la malla de Sistemas ya cargada como ejemplo).

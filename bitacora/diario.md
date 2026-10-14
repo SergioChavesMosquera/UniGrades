@@ -446,3 +446,40 @@ componentes con validación 100%, notas con promedios automáticos (materia/seme
 y dashboard de progreso. Todo con i18n es/en, RLS por usuario y reglas de negocio en la
 base de datos. Pendiente (futuro, otros chats): rediseño de frontend, app móvil, Google
 OAuth, suscripciones, escalar el catálogo compartido.
+
+
+---
+
+## Episodio 15 — Llenar el catálogo: 7 carreras más (Excel → SQL) 🛠️
+
+**Lo que pasó:** Sergio llenó la plantilla Excel con 8 bloques de mallas (375 filas): además
+de Sistemas, agregó Ingeniería Química, Enfermería, Geografía, Medicina Veterinaria, Diseño
+Gráfico, Ingeniería Industrial e Ingeniería Mecatrónica, más un bloque "TODAS" de
+nivelación común. Un trabajo enorme de recopilación.
+
+**Flujo usado (el que diseñamos):** Sergio llena el Excel → se lee automáticamente y se
+genera el SQL. No escribió una línea de SQL. Para leer el .xlsx se instaló temporalmente la
+librería xlsx de SheetJS, se generó la migración, y se desinstaló (0 vulnerabilidades en
+prod). El Excel estaba abierto (bloqueado), así que se leyó desde una copia.
+
+**Decisiones de producto (de la conversación):**
+- **Nivelación común ("TODAS"):** se copia a las carreras que no tenían nivelación propia.
+  Razón real que dio Sergio: no todos cursan nivelación (quien entra con buen puntaje
+  empieza directo), pero pertenece a toda carrera.
+- **Libre Elección:** NO se carga para ninguna. Razón: una electiva puede ser casi
+  cualquier materia de la universidad (un estudiante de Sistemas puede ver Cirugía como
+  libre), así que modelarlas sería inviable por ahora.
+- **total_creditos:** la suma de lo cargado (algunas mallas incluyen optativas que no todos
+  ven, p. ej. Geografía suma 220). Se ajusta después; no vale la pena estresarse ahora.
+- **Tipologías con espacios** ("Fundamentación ") se normalizaron automáticamente.
+
+**🔎 Detalle técnico:** Sistemas ya estaba en `0003_seed.sql` (fuente de verdad), así que
+se EXCLUYÓ del nuevo `0004_seed_programas.sql` para no duplicar. El 0004 es idempotente:
+cada bloque verifica si el programa ya existe y se salta si sí.
+
+**Resultado:** `0004_seed_programas.sql` con 7 carreras y 362 materias, listo para aplicar
+en producción. El catálogo del onboarding pasa de 1 a 8 carreras reales de la UNAL.
+
+**Lección de video:** el flujo "no-técnico llena un Excel → la herramienta genera el SQL"
+es justo lo que permite escalar el contenido sin saber programar. Y la higiene: instalar
+una dependencia solo para una tarea puntual y quitarla después.

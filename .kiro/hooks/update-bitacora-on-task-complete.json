@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Actualizar bitácora al cerrar tarea",
+      "trigger": "PostTaskExec",
+      "description": "Recuerda actualizar bitacora/diario.md con una entrada detallada cada vez que se completa una tarea de spec, para no perder ningún dato del proceso.",
+      "action": {
+        "type": "agent",
+        "prompt": "Se acaba de completar una tarea del proyecto. Actualiza bitacora/diario.md agregando (o completando) la entrada de episodio correspondiente a lo que se acaba de hacer. Incluye el MÁXIMO detalle posible para que no falte nada después: qué pidió el usuario y el prompt relevante, qué decisiones se tomaron y por qué, en qué modo se trabajó (🧭 Plan o 🛠️ Ejecución), qué obstáculos reales surgieron (márcalos con 🔥) y cómo se resolvieron, cualquier tema de seguridad (🔒), y qué quedó pendiente de configuración del usuario. Mantén el diario en español (es material fuente interno). No toques el ebook-outline.md (ese es el producto final en inglés y se deriva después). Sé exhaustivo: es mejor sobre-documentar que perder un dato."
+      }
+    }
+  ]
+}

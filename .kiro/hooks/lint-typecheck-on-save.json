@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Lint + Type-check al guardar",
+      "trigger": "PostFileSave",
+      "description": "Corre type-check (tsc --noEmit) y ESLint cuando se guarda un archivo .ts o .tsx, para mantener el código sano continuamente.",
+      "matcher": "\\.(ts|tsx)$",
+      "action": {
+        "type": "command",
+        "command": "npm run typecheck; npm run lint",
+        "timeout": 120
+      }
+    }
+  ]
+}

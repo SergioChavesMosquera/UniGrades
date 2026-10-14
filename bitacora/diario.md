@@ -415,10 +415,34 @@ solo toca estilos.
 vistas de la base de datos ya producen. Es la recompensa visual de todo el trabajo previo:
 el estudiante ve su carrera entera en una pantalla.
 
-<!-- Las siguientes entradas se irán agregando a medida que avancemos:
-     - Episodio 14: Publicar (GitHub + Vercel) + documentación
-     - Episodio 11: El momento mágico (el promedio se calcula solo)
-     - Episodio 12: Publicar (GitHub + Vercel, link público en vivo)
-     - Episodio 13: Marca y presencia online
-     - Episodio 14: Hacerlo oficial (registro, lanzamiento)
--->
+---
+
+## Episodio 14 — Publicar: documentación, Git y camino a Vercel 🛠️🧭
+
+**Lo que pasó:** se preparó el proyecto para publicarse y se cerró el MVP del backend/flujo.
+
+- **README** completo (stack, arquitectura, rutas, reglas de negocio, puesta en marcha,
+  despliegue, seguridad). Sirve también de guion técnico para el video.
+- **Git inicializado** en la rama `main` con un commit inicial. Se verificó explícitamente
+  que `.env.local` (credenciales) queda IGNORADO y NO se sube: solo viaja `.env.example`
+  con placeholders. 🔒 Lección: antes del primer push, confirmar que ningún secreto entra
+  al repo.
+- **Nombre del repo:** UniGrades (el nombre local de la carpeta "Vstudy" se queda solo en
+  la máquina; el proyecto público es UniGrades).
+
+**Decisión de proceso:** Sergio cierra aquí este chat (queda como "backend") y abrirá chats
+separados por aspecto (frontend, etc.) para mantener mejor memoria y respuestas enfocadas.
+El líder del grupo revisará lo construido antes de definir el frontend.
+
+**Pendiente de config del usuario (con guía):**
+1. Crear el repo `UniGrades` en GitHub (vacío) y hacer push del commit inicial.
+2. Importar el repo en Vercel.
+3. Configurar en Vercel `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+4. Desplegar y obtener el link público.
+
+**Estado del MVP (web, backend + flujo): COMPLETO.** Landing, auth (email), onboarding con
+catálogo (malla de Ingeniería de Sistemas) + creación manual, semestres e inscripciones,
+componentes con validación 100%, notas con promedios automáticos (materia/semestre/global)
+y dashboard de progreso. Todo con i18n es/en, RLS por usuario y reglas de negocio en la
+base de datos. Pendiente (futuro, otros chats): rediseño de frontend, app móvil, Google
+OAuth, suscripciones, escalar el catálogo compartido.

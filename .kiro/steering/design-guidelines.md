@@ -35,6 +35,30 @@ inclusion: manual
 
 Modo claro y oscuro usando **las mismas variables de color**.
 
+### Jerarquía de aplicación de color
+
+Los HEX de la tabla anterior NO cambian; lo que cambia es **cómo y cuánto** se aplican.
+La identidad base es blanco/negro y el color es puntual.
+
+- **Base dominante:** blanco y negro. En modo claro el fondo es blanco hueso (`#F7F8F5`) y
+  el texto casi negro; los botones base son negros sobre texto blanco (`--primary` = negro).
+  El color NO domina la pantalla.
+- **Verde esmeralda (`#0B6B4F`) como acento menor:** se reserva para acentos puntuales
+  (p. ej. `--accent`, enlaces, foco), nunca como color de superficie, botón base ni relleno
+  dominante. Es un acento, no el protagonista.
+- **Menta (`#2ED8A3`), ámbar (`#FFB020`) y coral (`#FF5C5C`):** solo acentos puntuales y el
+  **semáforo de estado** (aprobando = menta, en riesgo = ámbar, reprobando = coral). No se
+  usan como fondo ni como relleno amplio.
+- **Modo oscuro (estilo "SerStack"):** fondo casi negro (`#0B0F14`), texto blanco. El único
+  color brillante es el verde/menta de marca, usado con moderación como acento puntual
+  (botón primario, foco, resaltados mínimos). Nada de superficies saturadas.
+- **Texto secundario:** gris pizarra (`#5B6770`) para etiquetas y ayudas.
+
+Regla práctica: si al cambiar de tema una pantalla se ve "verde", está mal; el verde debe
+aparecer solo en detalles. La autoridad de color son las variables de `app/globals.css`
+(`--bg`, `--surface`, `--fg`, `--primary`, `--accent`, `--focus-ring`, etc.); los
+componentes leen tokens, nunca HEX literales.
+
 ## Tipografía (Google Fonts)
 | Uso | Fuente | Detalle |
 |-----|--------|---------|

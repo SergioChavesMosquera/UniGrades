@@ -28,7 +28,7 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted);
 
-  --color-accent: var(--brand-accent);
+  --color-accent: var(--accent, var(--brand-accent));
   --color-accent-foreground: var(--primary-fg);
 
   --color-destructive: var(--brand-danger);
@@ -92,41 +92,59 @@
   --tap-min: 44px; /* objetivo táctil mínimo */
 }
 
-/* Tema claro (por defecto) */
+/*
+ * Tema claro (por defecto).
+ *
+ * Jerarquía: base dominante blanco/negro. El fondo es blanco hueso, el texto
+ * casi negro y --primary es negro (botones base blanco sobre negro). El verde
+ * esmeralda de marca queda reservado como ACENTO MENOR en --accent (no se usa
+ * como color de superficie ni de botón base). El semáforo de estado sigue
+ * usando los HEX de marca (menta/ámbar/coral) sin cambios.
+ */
 :root,
 [data-theme="light"] {
-  --bg: #f7f8f5;
+  --bg: #f7f8f5; /* blanco hueso */
   --surface: #ffffff;
-  --fg: #0f1b2d;
+  --fg: #0d0f12; /* casi negro */
   --muted: #5b6770; /* gris pizarra */
   --border: #e2e6e1;
-  --primary: var(--brand-primary);
+  --primary: #0d0f12; /* negro: botones base */
   --primary-fg: #ffffff;
-  --focus-ring: var(--brand-accent);
+  --accent: var(--brand-primary); /* verde #0B6B4F como acento menor */
+  --focus-ring: var(--brand-primary);
 }
 
-/* Tema oscuro (elección explícita) */
+/*
+ * Tema oscuro (elección explícita) — estilo "SerStack".
+ *
+ * Fondo casi negro, texto blanco. El único color brillante es el verde/menta
+ * de marca, usado con moderación como acento puntual (--primary, --accent y el
+ * anillo de foco). --surface/--border/--muted se calibran para contraste AA
+ * sobre el fondo casi negro.
+ */
 [data-theme="dark"] {
-  --bg: #0f1b2d; /* azul noche */
-  --surface: #16243a;
-  --fg: #f7f8f5;
+  --bg: #0b0f14; /* casi negro */
+  --surface: #14191f;
+  --fg: #f7f8f5; /* blanco */
   --muted: #9aa7b2;
-  --border: #2a3a52;
-  --primary: var(--brand-accent);
-  --primary-fg: #0f1b2d;
+  --border: #272e38;
+  --primary: var(--brand-accent); /* menta brillante como acento puntual */
+  --primary-fg: #0b0f14;
+  --accent: var(--brand-accent);
   --focus-ring: var(--brand-accent);
 }
 
-/* Sin elección explícita: seguir el sistema operativo */
+/* Sin elección explícita: seguir el sistema operativo (mismos valores que dark) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --bg: #0f1b2d;
-    --surface: #16243a;
+    --bg: #0b0f14;
+    --surface: #14191f;
     --fg: #f7f8f5;
     --muted: #9aa7b2;
-    --border: #2a3a52;
+    --border: #272e38;
     --primary: var(--brand-accent);
-    --primary-fg: #0f1b2d;
+    --primary-fg: #0b0f14;
+    --accent: var(--brand-accent);
     --focus-ring: var(--brand-accent);
   }
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Button, Container } from "@/components/ui";
+import { Container, NavButton } from "@/components/ui";
 import { Logo } from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
@@ -51,10 +51,10 @@ export default function LandingPage() {
             }}
           >
             <Link href="/signup">
-              <Button variant="primary">{t("createAccount")}</Button>
+              <NavButton variant="primary">{t("createAccount")}</NavButton>
             </Link>
             <Link href="/login">
-              <Button variant="secondary">{t("signIn")}</Button>
+              <NavButton variant="secondary">{t("signIn")}</NavButton>
             </Link>
           </div>
         </section>

@@ -1,4 +1,5 @@
 export { Button } from "./Button";
+export { NavButton } from "./NavButton";
 export { Input } from "./Input";
 export { Container } from "./Container";
 export { Card } from "./Card";

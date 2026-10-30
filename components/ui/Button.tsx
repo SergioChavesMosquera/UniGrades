@@ -20,6 +20,7 @@ export function Button({
   isLoading = false,
   disabled,
   style,
+  className,
   children,
   ...props
 }: ButtonProps) {
@@ -55,6 +56,7 @@ export function Button({
     <button
       disabled={isDisabled}
       aria-busy={isLoading || undefined}
+      className={className ? `ug-btn ${className}` : "ug-btn"}
       style={{
         ...base,
         ...variants[variant],

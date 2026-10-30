@@ -1,12 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useQueries } from "@tanstack/react-query";
 import { Card, ProgressRing, StatCard, StatusBadge } from "@/components/ui";
-import {
-  useCurrentSubjects,
-  useGlobalAverage,
-  useProgressByTypology,
-} from "@/services/queries";
+import { getGlobalAverage } from "@/services/grades";
+import { getCurrentSubjects, getProgressByTypology } from "@/services/progress";
 
 export function DashboardClient({
   userId,
@@ -17,9 +15,29 @@ export function DashboardClient({
 }) {
   const t = useTranslations("dashboard");
   const tEstado = useTranslations("semesters.estado");
-  const { data: global } = useGlobalAverage(userId);
-  const { data: progress } = useProgressByTypology(userId, programaId);
-  const { data: current } = useCurrentSubjects(userId);
+
+  // FEAT-003b: las 3 queries del dashboard se lanzan EN PARALELO con useQueries
+  // (antes eran 3 useQuery independientes que React Query ya paraleliza, pero
+  // useQueries lo hace explícito y evita el waterfall de renders). Se conservan
+  // las queryKey EXACTAS de services/queries.ts (global-average / progress-typology
+  // / current-subjects) reutilizando sus mismas funciones de servicio, sin tocar
+  // services/queries.ts.
+  const [{ data: global }, { data: progress }, { data: current }] = useQueries({
+    queries: [
+      {
+        queryKey: ["global-average", userId],
+        queryFn: () => getGlobalAverage(userId),
+      },
+      {
+        queryKey: ["progress-typology", userId, programaId],
+        queryFn: () => getProgressByTypology(userId, programaId),
+      },
+      {
+        queryKey: ["current-subjects", userId],
+        queryFn: () => getCurrentSubjects(userId),
+      },
+    ],
+  });
 
   return (
     <div

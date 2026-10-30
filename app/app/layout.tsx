@@ -1,27 +1,22 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { AppNav } from "@/components/nav/AppNav";
 
 /**
- * Layout protegido de /app. Gate de sesión en server (defensa en profundidad
- * además del middleware). La redirección al onboarding se decide por página
- * (ver app/app/page.tsx), ya que el onboarding también vive bajo /app.
+ * Layout protegido de /app.
+ *
+ * Seguridad (FEAT-003a): NO revalida la sesión aquí. El gate de autenticación de
+ * /app lo cubre proxy.ts, que en CADA request llama a supabase.auth.getUser()
+ * (round-trip real que revalida el token contra Supabase, no solo la cookie) y
+ * redirige a /login si no hay sesión. Repetir getUser() en este layout era una
+ * tercera llamada en serie (proxy -> layout -> page) que añadía latencia sin
+ * aportar garantía extra: si el proxy deja pasar la request, ya hay sesión válida.
+ * La única revalidación server adicional vive en app/app/page.tsx, donde el
+ * user.id se necesita de todos modos para consultar el perfil del usuario.
  */
-export default async function AppLayout({
+export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
   return (
     <>
       <AppNav />

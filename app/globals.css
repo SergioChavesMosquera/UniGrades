@@ -1,3 +1,52 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * Puente de tokens shadcn / MagicUI -> tokens existentes de UniGrades.
+ *
+ * `@theme inline` expone los nombres que esperan los componentes de shadcn y
+ * MagicUI (--color-background, --color-primary, --radius-*, etc.) apuntando a
+ * las variables que YA definen los temas del proyecto (--bg, --fg, --primary…).
+ * Así los componentes nuevos leen la paleta del proyecto sin reescribir los
+ * consumidores actuales ni duplicar la fuente de verdad del color.
+ */
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+
+  --color-card: var(--surface);
+  --color-card-foreground: var(--fg);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--fg);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-fg);
+
+  --color-secondary: var(--surface);
+  --color-secondary-foreground: var(--fg);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted);
+
+  --color-accent: var(--brand-accent);
+  --color-accent-foreground: var(--primary-fg);
+
+  --color-destructive: var(--brand-danger);
+  --color-destructive-foreground: var(--primary-fg);
+
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--focus-ring);
+
+  --font-sans: var(--font-body, var(--font-sans));
+  --font-mono: var(--font-mono, var(--font-mono-fallback));
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-sm);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+}
+
 /*
  * Sistema de tokens de diseño de UniGrades.
  *

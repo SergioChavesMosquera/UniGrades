@@ -1,6 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -9,6 +8,7 @@ import { Logo } from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LogoutButton } from "@/components/LogoutButton";
+import { Dock, DockIcon } from "@/components/ui/dock";
 
 /**
  * Barra de navegación del área autenticada (/app). Componente "tonto": solo
@@ -79,40 +79,32 @@ export function AppNav() {
           <Logo variant="horizontal" height={24} />
         </Link>
 
-        <ul
-          style={{
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            gap: "var(--space-xs)",
-            flex: "1 1 auto",
-          }}
+        {/* Enlaces de sección en un Dock (MagicUI): magnificación al pasar el
+            cursor en escritorio; en móvil/tap sigue siendo táctil (≥44px) y
+            cada enlace mantiene etiqueta textual + indicador de sección activa
+            (no solo color, R12.3). Mismos links y labels i18n de antes. */}
+        <Dock
+          className="mx-0 mt-0 flex-1 justify-start border-[var(--border)] bg-transparent backdrop-blur-none"
+          iconSize={40}
+          iconMagnification={52}
+          iconDistance={120}
         >
           {LINKS.map(({ href, key, Icon }) => {
             const active = isActive(pathname, href);
-            const linkStyle: CSSProperties = {
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              minHeight: "var(--tap-min)",
-              padding: "0 var(--space-xs)",
-              borderRadius: "var(--radius-sm)",
-              textDecoration: active ? "underline" : "none",
-              textUnderlineOffset: 4,
-              fontWeight: active ? 700 : 500,
-              color: active ? "var(--primary)" : "var(--fg)",
-              background: active ? "var(--bg)" : "transparent",
-              whiteSpace: "nowrap",
-            };
             return (
-              <li key={href}>
+              <DockIcon key={href} className="aspect-auto rounded-[var(--radius-sm)]">
                 <Link
                   href={href}
                   aria-current={active ? "page" : undefined}
-                  style={linkStyle}
+                  title={t(key)}
+                  className="inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap px-2"
+                  style={{
+                    borderRadius: "var(--radius-sm)",
+                    textDecoration: active ? "underline" : "none",
+                    textUnderlineOffset: 4,
+                    fontWeight: active ? 700 : 500,
+                    color: active ? "var(--primary)" : "var(--fg)",
+                  }}
                 >
                   <Icon size={18} aria-hidden="true" />
                   <span>{t(key)}</span>
@@ -123,10 +115,10 @@ export function AppNav() {
                     </span>
                   ) : null}
                 </Link>
-              </li>
+              </DockIcon>
             );
           })}
-        </ul>
+        </Dock>
 
         <div
           style={{

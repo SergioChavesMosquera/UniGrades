@@ -17,6 +17,9 @@
   },
   "landing": {
     "tagline": "Lleva el seguimiento de tus notas, promedios y avance académico en un solo lugar. Configura los componentes de cada materia y mira tu promedio por semestre y acumulado al instante.",
+    "heroTitle": "Tus notas,",
+    "heroTitleAccent": "bajo control",
+    "heroSubtitle": "Registra, calcula y proyecta tu promedio en un solo lugar.",
     "createAccount": "Crear cuenta",
     "signIn": "Iniciar sesión",
     "footerDisclaimer": "UniGrades no está afiliado a la Universidad Nacional de Colombia (UNAL). Es una herramienta personal e independiente del estudiante.",

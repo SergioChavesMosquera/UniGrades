@@ -37,6 +37,15 @@ la base de datos.
 - Datos remotos siempre vía React Query (nada de `useEffect` + `fetch`).
 - Verificación tras cada cambio: `npm run typecheck`, `npm run lint`, `npm run build`.
 
+> **Segundo pase (revisión del líder + feedback del usuario).** Tras ejecutar el primer pase,
+> el usuario pidió un rediseño más profundo: adoptar **Tailwind v4 + shadcn + MagicUI** para
+> dar vida a la página, invertir la jerarquía de color (**blanco/negro dominante, verde como
+> acento menor**, dark mode casi negro estilo "SerStack"), **acortar el hero** (tenía
+> demasiado texto) y **arreglar el rendimiento** (la app se sentía lenta y los botones no daban
+> señal al click). Los Requisitos 13–16 cubren ese segundo pase; los Requisitos 1–12 siguen
+> vigentes, con la salvedad de la jerarquía de color (ver Requisito 14) y el hero (Requisito 15).
+> Detalle de lo instalado/usado: ver `redesign-log.md`.
+
 ---
 
 ## Requisitos
@@ -241,3 +250,71 @@ consistente, para moverme entre las secciones principales sin perderme.
    menos 44x44px y sin provocar scroll horizontal.
 6. LA navegación NO DEBE introducir lógica de datos nueva: solo enlaces y los controles
    presentacionales/acciones ya existentes.
+
+### Requisito 13 — Adopción de Tailwind v4 + shadcn + MagicUI
+
+**Historia de usuario:** Como usuario, quiero una página más viva y con componentes modernos,
+y como desarrollador quiero una base de estilos que haga fácil sumar más componentes.
+
+#### Criterios de aceptación
+1. EL SISTEMA DEBE adoptar Tailwind CSS v4 vía el plugin PostCSS (`@tailwindcss/postcss`),
+   con `@import "tailwindcss"` en `app/globals.css`, SIN reescribir los consumidores actuales.
+2. EL SISTEMA DEBE inicializar shadcn (`components.json` + `lib/utils.ts` con `cn`) y puentear
+   los tokens que shadcn/MagicUI esperan a las variables existentes mediante `@theme inline`,
+   de modo que la paleta siga viviendo UNA sola vez en los temas.
+3. CUANDO se añada un componente MagicUI ENTONCES DEBE instalarse por separado desde su
+   registro (`https://magicui.design/r/<comp>.json`) y, si falla por incompatibilidad React
+   19 / Next 16, NO forzarse: se documenta el fallo en `redesign-log.md`.
+4. LAS dependencias de Tailwind DEBEN pinearse a versión exacta; las dependencias de ruido o
+   con riesgo de typosquat que arrastre el CLI DEBEN desinstalarse.
+5. TODO lo instalado y usado (versiones, comandos, componentes y su origen) DEBE quedar
+   documentado en `redesign-log.md`.
+
+### Requisito 14 — Jerarquía de color blanco/negro con verde como acento menor
+
+**Historia de usuario:** Como usuario, quiero una identidad sobria blanco/negro con el verde
+solo como acento, y un modo oscuro casi negro que se vea bien.
+
+#### Criterios de aceptación
+1. EN tema claro EL fondo y el texto DEBEN ser dominantemente blanco/negro; `--primary` DEBE
+   ser negro (botones base blanco/negro) y el verde `#0B6B4F` DEBE usarse solo como acento
+   menor (token `--accent`).
+2. EN tema oscuro EL fondo DEBE ser casi negro (p. ej. `#0b0f14`), el texto blanco, y el único
+   color brillante DEBE ser el acento (menta `#2ED8A3`), usado con moderación.
+3. LOS HEX de marca (`#0B6B4F`, `#2ED8A3`, `#FFB020`, `#FF5C5C`) NO DEBEN cambiar de valor;
+   solo cambia su aplicación/jerarquía. Siguen sirviendo al semáforo de estado.
+4. LOS NOMBRES de variables existentes DEBEN conservarse; el fallback
+   `prefers-color-scheme: dark` DEBE reflejar el nuevo tema oscuro.
+5. EL cambio NO DEBE tocar `lib/theme/*` ni `app/layout.tsx` (la resolución por cookie y el
+   anti-FOUC se conservan).
+
+### Requisito 15 — Hero corto en la landing
+
+**Historia de usuario:** Como visitante, quiero entender la propuesta de un vistazo, sin
+párrafos largos antes de registrarme.
+
+#### Criterios de aceptación
+1. EL hero de `app/page.tsx` DEBE presentar un titular CORTO y un subtítulo de UNA línea, en
+   lugar del párrafo largo anterior.
+2. EL titular DEBE llevar un fragmento de acento en color brillante (verde/menta) y el fondo
+   DEBE ser oscuro casi negro, coherente con el estilo "SerStack".
+3. TODO el copy del hero DEBE resolverse vía next-intl en es/en; `landing.tagline` y las demás
+   claves existentes DEBEN conservarse.
+4. EL footer con el aviso de no afiliación a la UNAL DEBE conservarse.
+
+### Requisito 16 — Rendimiento percibido
+
+**Historia de usuario:** Como usuario, quiero que la app responda rápido y que al tocar un
+botón sepa de inmediato que se activó.
+
+#### Criterios de aceptación
+1. LA validación de sesión server dentro de `/app` NO DEBE repetirse en serie: DEBE quedar UNA
+   sola revalidación además del `proxy.ts` (que ya valida en cada request), con un comentario
+   que justifique la seguridad del cambio. NO se toca `lib/supabase/*`.
+2. EL dashboard DEBE lanzar sus 3 queries en paralelo (no en cascada) conservando las
+   `queryKey` y firmas de `services/queries.ts` exactas; si el prefetch server resulta frágil
+   por el client de navegador + RLS, DEBE usarse el fallback `useQueries`, documentando la
+   elección.
+3. LOS botones DEBEN dar feedback `:active`/pressed instantáneo al click, y al menos un CTA de
+   navegación DEBE mostrar estado *pending* inmediato (`useLinkStatus`/`useTransition`),
+   conservando la firma de props de `Button`.

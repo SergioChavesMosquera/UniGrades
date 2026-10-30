@@ -1211,3 +1211,104 @@ contraste es correcto en ambos temas.
 hizo sin tocar el backend, y una auditoría de git lo demuestra. Esa es la recompensa de
 haber construido con los cimientos correctos: cuando llega el momento de "hacerlo bonito",
 es solo piel sobre un esqueleto que ya funciona.
+
+
+---
+
+## Episodio 17 — El rediseño que no convenció: segundo pase pesado (Tailwind + MagicUI) 🧭→🛠️
+
+**Lo que pasó:** Sergio ejecutó todo el primer pase del rediseño… y no le gustó. Feedback
+honesto (el mejor material de video): "siento que hay mucho por mejorar". Puntos concretos:
+1. El **líder del proyecto** mandó lineamientos de identidad visual (capturas).
+2. El **hero de la landing tenía demasiado texto** antes siquiera de hacer login.
+3. Quería **componentes de MagicUI** para darle vida a la página (mandó la lista completa).
+4. La app se sentía **lenta**: se daba clic a un botón y no se sabía si se había activado.
+5. La **paleta/tipografía no convencía**, y el **modo oscuro se veía feo**.
+6. Decisión clave: **pasar a Tailwind** ("el CSS es horrible a mi gusto y así es más fácil
+   usar más componentes"), usar el **verde como color menor** —mayoría blanco y negro, los
+   demás como acentos mínimos— y **documentar todo** lo que se use.
+
+**Modo de trabajo:** 🛠️ Ejecución orquestada en features (FEAT-001..005), sobre un worktree
+dedicado (`frontend-redesign`), cada una delegada a un subagente. Mismo rigor de la regla de
+oro: NADA de `services/`, `lib/supabase/`, `supabase/`, `types/domain.ts`, ni `queryKey`/firmas
+de `services/queries.ts`.
+
+### FEAT-001 — Fundación Tailwind v4 + shadcn ✅
+
+Se instaló **Tailwind v4** (`tailwindcss@4.3.3` + `@tailwindcss/postcss@4.3.3`, pineados
+exactos) vía plugin PostCSS, con `@import "tailwindcss"` en `globals.css`. **🔥 Obstáculo
+real:** `npx shadcn@canary init` se cuelga en este shell no-TTY (su interfaz canary cambió y
+espera prompts interactivos pese a `--yes/--force`). Solución pragmática: generar a mano los
+mismos artefactos que produce el init (`components.json` + `lib/utils.ts` con `cn`). Se añadió
+un bloque `@theme inline` que PUENTEA los tokens que shadcn/MagicUI esperan a las variables ya
+existentes del proyecto (`--color-primary → --primary`, etc.), para no duplicar la fuente de
+verdad del color. **Lección:** cuando una herramienta interactiva no coopera en CI/no-TTY,
+replicar su salida determinista es mejor que pelear con los prompts.
+
+### FEAT-002 — Invertir la jerarquía de color ✅
+
+El cambio que pidió Sergio: **blanco/negro dominante, verde como acento menor**, dark mode
+casi negro (estilo "SerStack"). En `globals.css`, conservando TODOS los nombres de variables:
+claro con `--primary` NEGRO y un nuevo `--accent` verde `#0B6B4F` como acento menor; oscuro con
+fondo casi negro `#0b0f14`, texto blanco y la menta `#2ED8A3` como único color brillante
+puntual. Los HEX de marca NO cambiaron —solo cambió cuánto y cómo se aplican—; siguen
+alimentando el semáforo de estado del `StatusBadge`. `lib/theme/*` y `app/layout.tsx`
+intactos. **Lección:** "cambiar la paleta" no significó tocar cada componente: con tokens bien
+hechos, es editar un puñado de variables.
+
+### FEAT-003 — Rendimiento: que se SIENTA rápida ✅
+
+Tres frentes, todos presentacionales:
+- **🔒 Dedupe de sesión (con razonamiento de seguridad):** `getUser()` corría 3 veces en serie
+  (proxy → layout → page). Se eliminó la del layout; queda UNA revalidación server en `page`
+  (ahí se usa el `user.id`). ¿Por qué es seguro? El `proxy.ts` llama `getUser()` en CADA
+  request (round-trip real que revalida el token, no solo lee la cookie) y ya redirige a
+  `/login` sin sesión; si el proxy deja pasar, la sesión es válida. El segundo gate solo
+  agregaba latencia. Defensa en profundidad conservada.
+- **Dashboard en paralelo:** las 3 queries iban en cascada. Se paralelizaron con `useQueries`
+  (fallback) usando las `queryKey` EXACTAS. **Decisión documentada:** NO se usó
+  prefetch+HydrationBoundary porque los servicios usan el client de NAVEGADOR (sin sesión
+  server en un prefetch → RLS vacío) y no se puede tocar `services/`.
+- **Feedback de botones:** regla `.ug-btn:active { scale .97 }` (80ms) para señal instantánea
+  al click, y un `NavButton` con `useLinkStatus()` para estado *pending* inmediato en los CTA.
+  Justo el síntoma que reportó Sergio: "se da clic y no se sabe si se activó".
+
+**Lección de video:** "lento" muchas veces es DOS cosas: latencia real (quitamos un round-trip
+y paralelizamos) y **percepción** (el botón que no responde al instante). Se atacan por
+separado.
+
+### FEAT-004 — Hero corto + MagicUI por toda la app ✅
+
+- **Hero:** se partió el párrafo largo en un titular CORTO (`heroTitle`) + una línea de
+  subtítulo (`heroSubtitle`), con una palabra de acento en `AuroraText` sobre fondo casi negro
+  y un `DotPattern` sutil. CTA con `ShimmerButton`. Todo vía i18n, footer de no-afiliación UNAL
+  conservado.
+- **MagicUI (todos OK con React 19 / Next 16, ninguno falló por versión):** `aurora-text`,
+  `shimmer-button`, `dot-pattern` (hero); `bento-grid` + `number-ticker` + `border-beam`
+  (dashboard); `dock` (navegación). Origen: `https://magicui.design/r/<comp>.json`.
+- **🔥 Obstáculos reales (buen material):**
+  - En **Windows** el filesystem es *case-insensitive*: `shadcn add button` sobreescribió el
+    `Button.tsx` del proyecto (button.tsx == Button.tsx). Se restauró con `git checkout` y se
+    refactorizaron los MagicUI para no depender del `button` de shadcn.
+  - `magic-card` requería `next-themes` (el proyecto usa tema por cookie) → se ELIMINÓ y se
+    usó `border-beam`.
+  - El CLI arrastró dependencias de ruido (`cn` typosquat-risk, `radix-ui`, `next-themes`) →
+    se DESINSTALARON. Quedaron como nuevas reales: `motion@^14.9.0` (compat React 19) y
+    `@radix-ui/react-icons@^1.3.2`.
+- **Celebración:** NO se tocó. El confeti imperativo (`canvas-confetti`) ya dispara solo en la
+  transición real a `aprobada`; el `Confetti` declarativo de MagicUI no aportaba sin arriesgar
+  ese disparo. Y en el detalle de materia se conservó `AnimatedNumber` (anima on-change) en
+  vez de `NumberTicker` (anima once-on-inview → sería regresión), sin tocar el forecast/RN-2.
+
+### FEAT-005 — Documentar todo ✅ (esta entrada)
+
+Como pidió Sergio ("documenta todo lo que uses y me dices"), se creó
+`.kiro/specs/frontend-redesign/redesign-log.md` con: dependencias + versiones exactas, comandos
+ejecutados, componentes MagicUI con su URL de origen (y los que fallaron, con el motivo),
+cambios de paleta/tokens y el razonamiento de rendimiento (incluida la seguridad del dedupe de
+`getUser`). Se actualizaron `requirements.md` (Req. 13–16), `design.md` (sección del segundo
+pase) y `tasks.md` (tareas 12–16 marcadas), más esta bitácora.
+
+**Lección de video (cierre del segundo pase):** el feedback "no me gustó" no es un fracaso, es
+dirección. Se convirtió en cinco frentes concretos (identidad, hero, componentes, velocidad,
+color) y cada uno en una feature verificable —sin tocar una línea de backend, otra vez.

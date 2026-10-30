@@ -386,3 +386,79 @@ bloque de lógica nueva (forecast):
 - **Estilos:** se migran los estilos inline actuales a tokens; se puede usar CSS Modules o
   clases utilitarias en `globals.css`. No se introduce una librería de CSS nueva salvo que la
   tarea de implementación lo justifique y se apruebe.
+
+---
+
+## Segundo pase — Tailwind v4 + shadcn + MagicUI, jerarquía de color, hero corto y rendimiento
+
+Tras el primer pase, el usuario pidió profundizar. Este bloque documenta la estrategia del
+segundo pase. El registro operativo completo (versiones exactas, comandos, URLs de MagicUI,
+componentes que fallaron) vive en `redesign-log.md`.
+
+### Estrategia Tailwind / shadcn / MagicUI
+
+- **Tailwind v4** se activa con el plugin PostCSS (`@tailwindcss/postcss`) y
+  `@import "tailwindcss"` como primera línea de `app/globals.css`. No se reescriben los
+  consumidores existentes: las utilidades Tailwind conviven con los estilos basados en tokens.
+- **shadcn** se inicializa generando `components.json` (style `new-york`, `cssVariables: true`,
+  baseColor `neutral`, alias `@/*`, iconLibrary `lucide`) y `lib/utils.ts` (`cn`). En este
+  shell no-TTY el `init` canary se cuelga en los prompts, así que los artefactos se generan a
+  mano de forma determinista (equivalente al init).
+- **MagicUI** se añade por componente desde su registro
+  (`npx shadcn@latest add "https://magicui.design/r/<comp>.json"`), best-effort. Integrados:
+  `aurora-text` + `shimmer-button` + `dot-pattern` (hero), `bento-grid` + `number-ticker` +
+  `border-beam` (dashboard), `dock` (nav), `confetti` (disponible). `magic-card` se descartó
+  (dependía de `next-themes`); el shadcn `button` NO se instala en Windows (colisiona con
+  `Button.tsx` por filesystem case-insensitive).
+
+### Puente de tokens `@theme inline`
+
+El bloque `@theme inline` de `globals.css` mapea los nombres que esperan shadcn/MagicUI
+(`--color-background`, `--color-primary`, `--color-accent`, `--radius-*`, `--font-*`…) a las
+variables que ya definen los temas del proyecto (`--bg`, `--fg`, `--primary`, `--accent`…).
+`--color-accent` apunta a `var(--accent, var(--brand-accent))` para que el acento sea sensible
+al tema. Objetivo: los componentes nuevos leen la paleta del proyecto sin duplicar la fuente
+de verdad del color ni reescribir consumidores.
+
+### Nueva paleta y dark mode (invierte la jerarquía)
+
+Se mantienen los NOMBRES de variables y los HEX de marca; cambia su aplicación:
+
+- **Claro:** `--bg #f7f8f5`, `--surface #fff`, `--fg #0d0f12`; `--primary` pasa a **negro**
+  `#0d0f12` (botones blanco/negro); nuevo `--accent = var(--brand-primary)` (`#0B6B4F`) como
+  acento **menor**; `--focus-ring = var(--brand-primary)`.
+- **Oscuro (estilo "SerStack"):** `--bg #0b0f14` (casi negro), `--surface #14191f`,
+  `--fg #f7f8f5`, `--border #272e38`; `--primary`/`--accent = var(--brand-accent)` (`#2ED8A3`)
+  como único color brillante puntual; `--primary-fg #0b0f14`.
+- El fallback `@media (prefers-color-scheme: dark) { :root:not([data-theme]) }` replica el tema
+  oscuro. Los HEX `#0B6B4F/#2ED8A3/#FFB020/#FF5C5C` no cambian: siguen alimentando el
+  `StatusBadge`. `lib/theme/*` y `app/layout.tsx` intactos.
+
+### Hero corto
+
+`app/page.tsx` se reescribe a Tailwind: fondo oscuro casi negro, titular corto
+(`landing.heroTitle`) con fragmento de acento en `AuroraText` (`landing.heroTitleAccent`),
+subtítulo de una línea (`landing.heroSubtitle`), CTA `ShimmerButton` → `/signup` y enlace a
+`/login`, `DotPattern` de fondo. Footer de no-afiliación UNAL conservado. Copy 100% vía
+next-intl; `landing.tagline` y demás claves existentes se conservan.
+
+### Cambios de rendimiento
+
+- **Dedupe de `getUser` (seguridad):** `supabase.auth.getUser()` iba 3 veces en serie
+  (`proxy.ts` → `app/app/layout.tsx` → `app/app/page.tsx`). Se elimina la del `layout`
+  (vuelve a síncrono); queda UNA revalidación server en `page.tsx` (ahí se usa `user.id`).
+  Razonamiento: `proxy.ts` ejecuta `getUser()` en **cada** request (round-trip que revalida el
+  token, no solo lee la cookie) y ya redirige a `/login` sin sesión; si el proxy deja pasar, la
+  sesión es válida, así que el segundo gate solo añadía latencia. Defensa en profundidad:
+  proxy (cada request) + una revalidación server. No se toca `lib/supabase/*`.
+- **Dashboard en paralelo (`useQueries`, NO prefetch+hydration):** se eligió el fallback
+  `useQueries` porque las funciones de servicio usan `createBrowserClient`, que no lleva la
+  sesión server en un prefetch de server component → RLS devolvería vacío, y no se puede tocar
+  `services/`. En `DashboardClient.tsx` los 3 `useQuery` pasan a un `useQueries` con las
+  `queryKey` EXACTAS de `services/queries.ts` (`global-average`/`progress-typology`/
+  `current-subjects`). `services/queries.ts` sin cambios.
+- **Feedback de botones:** `Button.tsx` añade la clase `ug-btn` y una regla
+  `.ug-btn:not(:disabled):active { transform: scale(.97); opacity:.9 }` (80ms) para señal
+  `:active` inmediata; nuevo `NavButton.tsx` usa `useLinkStatus()` de `next/link` para estado
+  *pending* inmediato en los CTAs de navegación. Firma de `Button` retrocompatible (solo se
+  agrega passthrough de `className`).

@@ -134,3 +134,59 @@
   - Revisión responsive a 360px y ≥640px, en claro y oscuro (manual por el usuario; el agente
     no levanta dev server). Confirmar que no hay textos hardcodeados (es/en completos).
   - _Requisitos: 10.1, 10.2, 10.3, 10.4, 7.1, 6.7_
+
+---
+
+## Segundo pase — Tailwind v4 + shadcn + MagicUI, color, hero y rendimiento
+
+> Tareas añadidas tras la revisión del líder y el feedback del usuario. Misma regla de oro: NO
+> tocar `services/`, `lib/supabase/`, `supabase/`, `types/domain.ts` ni `queryKey`/firmas de
+> `services/queries.ts`. Detalle de lo instalado/usado en `redesign-log.md`.
+
+- [x] 12. Fundación Tailwind v4 + shadcn (FEAT-001)
+  - Instalar `tailwindcss@4.3.3` y `@tailwindcss/postcss@4.3.3` (pin exacto); crear
+    `postcss.config.mjs`; `@import "tailwindcss"` en `app/globals.css`.
+  - Generar `components.json` y `lib/utils.ts` (`cn`) — equivalente al `shadcn init` (el init
+    canary se cuelga en shell no-TTY).
+  - Añadir `@theme inline` que mapee tokens shadcn/MagicUI → variables existentes, sin
+    reescribir consumidores.
+  - _Requisitos: 13.1, 13.2, 13.4_
+
+- [x] 13. Nueva jerarquía de color (FEAT-002)
+  - En `app/globals.css`: tema claro blanco/negro (`--primary` negro, nuevo `--accent` verde
+    menor); tema oscuro casi negro `#0b0f14` con acento menta puntual; fallback
+    `prefers-color-scheme` replicando el oscuro. Conservar nombres de variables y HEX de marca.
+  - Documentar la jerarquía de aplicación en `design-guidelines.md` (sin cambiar los HEX).
+  - No tocar `lib/theme/*` ni `app/layout.tsx`.
+  - _Requisitos: 14.1, 14.2, 14.3, 14.4, 14.5_
+
+- [x] 14. Rendimiento (FEAT-003)
+  - [x] 14.1 Dedupe de `getUser`: eliminar la llamada redundante de `app/app/layout.tsx`
+    (queda una en `page.tsx`), con comentario de seguridad. No tocar `lib/supabase/*`.
+    _Requisitos: 16.1_
+  - [x] 14.2 Dashboard en paralelo: `useQueries` (fallback) con las `queryKey` exactas de
+    `services/queries.ts`, sin modificarlo. _Requisitos: 16.2_
+  - [x] 14.3 Feedback de botones: `.ug-btn` `:active` inmediato en `Button.tsx` +
+    `NavButton.tsx` con `useLinkStatus()` en los CTAs de navegación. _Requisitos: 16.3_
+
+- [x] 15. Hero corto + MagicUI (FEAT-004)
+  - [x] 15.1 Hero: reescribir `app/page.tsx` a Tailwind, titular corto + subtítulo de una
+    línea + acento brillante, fondo casi negro; `landing.heroTitle/heroTitleAccent/
+    heroSubtitle` en es/en; conservar `tagline` y el footer de no afiliación UNAL.
+    _Requisitos: 15.1, 15.2, 15.3, 15.4_
+  - [x] 15.2 MagicUI landing: `aurora-text`, `shimmer-button`, `dot-pattern`. _Requisitos: 13.3_
+  - [x] 15.3 MagicUI dashboard: `bento-grid`, `number-ticker` (envuelto, respeta
+    `prefers-reduced-motion`), `border-beam`; datos de los hooks existentes sin cambios.
+    _Requisitos: 13.3_
+  - [x] 15.4 MagicUI navegación: `dock` en `AppNav.tsx`, mismos links y controles.
+    _Requisitos: 13.3_
+  - [x] 15.5 Celebración: conservar el disparo imperativo solo-en-transición-a-aprobada; no
+    migrar `AnimatedNumber` a `NumberTicker` en el detalle de materia (evita regresión y no
+    toca el forecast/RN-2). _Requisitos: 13.3_
+
+- [x] 16. Documentación del segundo pase (FEAT-005)
+  - Crear `redesign-log.md` (dependencias+versiones, comandos, MagicUI+origen e incompatibles,
+    paleta/tokens, rendimiento con la seguridad del `getUser`).
+  - Actualizar `requirements.md`, `design.md`, `tasks.md` y `bitacora/diario.md`.
+  - Confirmar `npm run typecheck`, `npm run lint`, `npm run build` en verde.
+  - _Requisitos: 13.5, 10.1_

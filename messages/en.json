@@ -4,12 +4,23 @@
     "backHome": "← Back to home",
     "language": "Language",
     "spanish": "Spanish",
-    "english": "English"
+    "english": "English",
+    "theme": "Theme",
+    "lightMode": "Light",
+    "darkMode": "Dark"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "semesters": "Semesters",
+    "settings": "Settings",
+    "primary": "Primary navigation"
   },
   "landing": {
     "tagline": "Track your grades, averages and academic progress in one place. Set up each course's components and see your term and cumulative GPA instantly.",
     "createAccount": "Create account",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "footerDisclaimer": "UniGrades is not affiliated with the Universidad Nacional de Colombia (UNAL). It is a personal, independent tool for students.",
+    "footerRights": "© {year} UniGrades"
   },
   "signup": {
     "title": "Create account",
@@ -100,6 +111,14 @@
     "configure": "Set up grading",
     "subjectGrade": "Course grade",
     "notYet": "—",
+    "forecast": {
+      "title": "What grade do you need?",
+      "secured": "You've secured it! With what's recorded, this course is passed.",
+      "needed": "You need <required></required> on average in what's left to pass.",
+      "impossible": "With what remains it's no longer enough to pass this course.",
+      "incompleteSetup": "Set up components to add up to 100% (currently {sum}%) to see your forecast.",
+      "insufficient": "Add components to see what grade you need."
+    },
     "componentGrade": "Avg",
     "gradesTitle": "Grades",
     "gradeName": "Label",
@@ -135,5 +154,13 @@
     "credits": "credits",
     "semester": "Sem.",
     "errorGeneric": "Something went wrong. Please try again."
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Configure your language, theme and review your program.",
+    "language": "Language",
+    "theme": "Theme",
+    "program": "Program",
+    "noProgram": "You haven't picked a program yet."
   }
 }

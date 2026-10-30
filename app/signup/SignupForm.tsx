@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { Button, Input } from "@/components/ui";
+import { Button, Card, Input } from "@/components/ui";
 import { signUpWithEmail } from "@/services/auth";
 
 export function SignupForm() {
@@ -36,7 +36,7 @@ export function SignupForm() {
   }
 
   return (
-    <div style={{ maxWidth: 360, marginTop: 24 }}>
+    <Card style={{ maxWidth: 400, marginTop: "var(--space-lg)" }}>
       <form onSubmit={handleSubmit}>
         <Input
           id="email"
@@ -54,18 +54,30 @@ export function SignupForm() {
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={error ?? undefined}
           minLength={6}
           required
         />
-        <div style={{ marginTop: 8 }}>
-          <Button type="submit" variant="primary" disabled={loading}>
+        <div style={{ marginTop: "var(--space-xs)" }}>
+          <Button type="submit" variant="primary" isLoading={loading}>
             {loading ? t("submitting") : t("submit")}
           </Button>
         </div>
       </form>
 
-      {error ? <p style={{ color: "#000", marginTop: 12 }}>⚠ {error}</p> : null}
-      {info ? <p style={{ color: "var(--muted)", marginTop: 12 }}>{info}</p> : null}
-    </div>
+      {info ? (
+        <p
+          role="status"
+          style={{
+            marginTop: "var(--space)",
+            marginBottom: 0,
+            fontSize: 13,
+            color: "var(--muted)",
+          }}
+        >
+          {info}
+        </p>
+      ) : null}
+    </Card>
   );
 }

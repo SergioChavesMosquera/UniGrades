@@ -18,13 +18,16 @@ export default async function SubjectPage({
   // Inscripción (RLS garantiza que sea del usuario) + materia + semestre.
   const { data: inscripcion } = await supabase
     .from("materia_usuario")
-    .select("id, semestre_id, materia(nombre)")
+    .select("id, semestre_id, materia(nombre, nota_minima_aprobacion)")
     .eq("id", id)
     .maybeSingle();
 
   if (!inscripcion) notFound();
 
-  const materia = inscripcion.materia as unknown as { nombre: string } | null;
+  const materia = inscripcion.materia as unknown as {
+    nombre: string;
+    nota_minima_aprobacion: number | null;
+  } | null;
 
   return (
     <Container>
@@ -39,7 +42,10 @@ export default async function SubjectPage({
       <h1>{materia?.nombre ?? "—"}</h1>
       <h2>{t("componentsTitle")}</h2>
 
-      <SubjectComponentsClient materiaUsuarioId={inscripcion.id} />
+      <SubjectComponentsClient
+        materiaUsuarioId={inscripcion.id}
+        notaMinima={materia?.nota_minima_aprobacion ?? 3.0}
+      />
     </Container>
   );
 }

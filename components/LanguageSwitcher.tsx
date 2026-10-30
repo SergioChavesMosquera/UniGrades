@@ -29,10 +29,10 @@ export function LanguageSwitcher() {
         onClick={() => change("es")}
         disabled={pending}
         style={{
-          background: locale === "es" ? "#000" : "#fff",
-          color: locale === "es" ? "#fff" : "#000",
+          background: locale === "es" ? "var(--primary)" : "var(--surface)",
+          color: locale === "es" ? "var(--primary-fg)" : "var(--fg)",
           border: "1px solid var(--border)",
-          borderRadius: "var(--radius)",
+          borderRadius: "var(--radius-sm)",
           padding: "4px 10px",
           cursor: "pointer",
           fontSize: 13,
@@ -45,10 +45,10 @@ export function LanguageSwitcher() {
         onClick={() => change("en")}
         disabled={pending}
         style={{
-          background: locale === "en" ? "#000" : "#fff",
-          color: locale === "en" ? "#fff" : "#000",
+          background: locale === "en" ? "var(--primary)" : "var(--surface)",
+          color: locale === "en" ? "var(--primary-fg)" : "var(--fg)",
           border: "1px solid var(--border)",
-          borderRadius: "var(--radius)",
+          borderRadius: "var(--radius-sm)",
           padding: "4px 10px",
           cursor: "pointer",
           fontSize: 13,

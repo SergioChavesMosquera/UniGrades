@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { Button, Input } from "@/components/ui";
+import { Button, Card, Input } from "@/components/ui";
 import { signInWithEmail } from "@/services/auth";
 
 export function LoginForm() {
@@ -30,7 +30,7 @@ export function LoginForm() {
   }
 
   return (
-    <div style={{ maxWidth: 360, marginTop: 24 }}>
+    <Card style={{ maxWidth: 400, marginTop: "var(--space-lg)" }}>
       <form onSubmit={handleSubmit}>
         <Input
           id="email"
@@ -48,16 +48,15 @@ export function LoginForm() {
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={error ?? undefined}
           required
         />
-        <div style={{ marginTop: 8 }}>
-          <Button type="submit" variant="primary" disabled={loading}>
+        <div style={{ marginTop: "var(--space-xs)" }}>
+          <Button type="submit" variant="primary" isLoading={loading}>
             {loading ? t("submitting") : t("submit")}
           </Button>
         </div>
       </form>
-
-      {error ? <p style={{ color: "#000", marginTop: 12 }}>⚠ {error}</p> : null}
-    </div>
+    </Card>
   );
 }

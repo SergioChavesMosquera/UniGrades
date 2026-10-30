@@ -6,6 +6,7 @@ type ContainerProps = {
 
 /**
  * Contenedor centrado con ancho máximo. Componente "tonto" de layout.
+ * Lee todas sus medidas de tokens de diseño.
  */
 export function Container({ children }: ContainerProps) {
   return (
@@ -13,7 +14,7 @@ export function Container({ children }: ContainerProps) {
       style={{
         maxWidth: "var(--max-width)",
         margin: "0 auto",
-        padding: "32px var(--space)",
+        padding: "var(--space-xl) var(--space)",
       }}
     >
       {children}

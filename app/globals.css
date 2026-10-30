@@ -1,33 +1,108 @@
 /*
- * Estilo global mínimo de UniGrades.
- * Blanco y negro, deliberadamente simple. Un rediseño futuro debería tocar
- * SOLO este archivo y components/ui, sin modificar lógica.
+ * Sistema de tokens de diseño de UniGrades.
+ *
+ * Toda la identidad visual (color, forma, espacio, sombra) vive aquí como
+ * variables CSS. Los componentes NUNCA usan literales hex/px: leen tokens.
+ * Un restyle futuro debería tocar SOLO este archivo y components/ui, sin
+ * modificar lógica ni consumidores.
+ *
+ * Retrocompatibilidad: se conservan los nombres de variables que ya usan los
+ * componentes (--bg, --fg, --muted, --border, --radius, --space, --max-width)
+ * y se añaden los nuevos tokens de marca y tema.
  */
 
 :root {
-  --bg: #ffffff;
-  --fg: #000000;
-  --muted: #666666;
-  --border: #000000;
-  --radius: 6px;
-  --space: 16px;
-  --max-width: 960px;
+  /* Paleta de marca (fija, independiente del tema) */
+  --brand-primary: #0b6b4f; /* verde esmeralda */
+  --brand-accent: #2ed8a3; /* menta / éxito */
+  --brand-warning: #ffb020; /* ámbar / en riesgo */
+  --brand-danger: #ff5c5c; /* coral / peligro */
+
+  /* Tipografía (variables inyectadas por next/font en Task 2) */
+  --font-title: var(--font-sora);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+
+  /* Fallback del sistema mientras no cargan las fuentes de next/font */
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial,
     sans-serif;
+  --font-mono-fallback: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* Forma y espacio */
+  --radius: 16px; /* tarjetas */
+  --radius-sm: 10px; /* inputs / botones */
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space: 16px;
+  --space-md: 20px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --max-width: 960px;
+  --shadow-soft: 0 2px 8px rgba(15, 27, 45, 0.08), 0 1px 2px rgba(15, 27, 45, 0.06);
+  --tap-min: 44px; /* objetivo táctil mínimo */
 }
 
-* {
+/* Tema claro (por defecto) */
+:root,
+[data-theme="light"] {
+  --bg: #f7f8f5;
+  --surface: #ffffff;
+  --fg: #0f1b2d;
+  --muted: #5b6770; /* gris pizarra */
+  --border: #e2e6e1;
+  --primary: var(--brand-primary);
+  --primary-fg: #ffffff;
+  --focus-ring: var(--brand-accent);
+}
+
+/* Tema oscuro (elección explícita) */
+[data-theme="dark"] {
+  --bg: #0f1b2d; /* azul noche */
+  --surface: #16243a;
+  --fg: #f7f8f5;
+  --muted: #9aa7b2;
+  --border: #2a3a52;
+  --primary: var(--brand-accent);
+  --primary-fg: #0f1b2d;
+  --focus-ring: var(--brand-accent);
+}
+
+/* Sin elección explícita: seguir el sistema operativo */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0f1b2d;
+    --surface: #16243a;
+    --fg: #f7f8f5;
+    --muted: #9aa7b2;
+    --border: #2a3a52;
+    --primary: var(--brand-accent);
+    --primary-fg: #0f1b2d;
+    --focus-ring: var(--brand-accent);
+  }
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+/* Base mobile-first: estilos pensados para 360px de ancho */
 html,
 body {
   margin: 0;
   padding: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-sans);
+  font-family: var(--font-body, var(--font-sans));
   line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  overflow-x: hidden; /* sin scroll horizontal a 360px */
 }
 
 a {
@@ -39,8 +114,36 @@ h2,
 h3 {
   margin: 0 0 var(--space);
   line-height: 1.2;
+  font-family: var(--font-title, var(--font-sans));
 }
 
 p {
   margin: 0 0 var(--space);
+}
+
+/* Foco de teclado visible en elementos interactivos (R7.4) */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Cifras tabulares para notas, promedios y porcentajes (R2.2) */
+.num {
+  font-family: var(--font-mono, var(--font-mono-fallback));
+  font-variant-numeric: tabular-nums;
+}
+
+/* Spinner de carga (Button isLoading) */
+@keyframes ug-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Respetar la preferencia de movimiento reducido (R11.4) */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

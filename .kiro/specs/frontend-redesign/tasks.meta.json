@@ -1,0 +1,339 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Sistema de tokens de diseño": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376761599
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376780366
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793377561359
+      }
+    ],
+    "2. Tipografía con next/font": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376762717
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793377688683
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793377856327
+      }
+    ],
+    "3.1 Capa de tema en `lib/theme/`": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376763161
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793377877465
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793378271103
+      }
+    ],
+    "3.2 Resolución en servidor (anti-FOUC) y toggle": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376763663
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793378292493
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793378551616
+      }
+    ],
+    "4. Iconografía Lucide": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376764263
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793378585362
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793378740868
+      }
+    ],
+    "5.1 Rediseñar primitivos existentes (retrocompatibles)": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376764814
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793378763948
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793378993414
+      }
+    ],
+    "5.2 Nuevos primitivos presentacionales": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376765798
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379017940
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379211154
+      }
+    ],
+    "5.3 `AnimatedNumber`": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376766312
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379233876
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379345303
+      }
+    ],
+    "6. Componente `Logo`": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376766859
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379368586
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379470251
+      }
+    ],
+    "7.1 Implementar `lib/grade-forecast.ts`": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376767295
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379490652
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379611033
+      }
+    ],
+    "7.2 Test unitario del forecast": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376768146
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379637113
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380081318
+      }
+    ],
+    "8. Microinteracciones de celebración": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376768911
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380111232
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380348936
+      }
+    ],
+    "9. Navegación móvil de `/app`": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376769532
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380376762
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380580455
+      }
+    ],
+    "10.1 Landing + auth": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376770155
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380602451
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380805401
+      }
+    ],
+    "10.2 Dashboard": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376771117
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380827119
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380986698
+      }
+    ],
+    "10.3 Detalle de materia + tarjeta estrella + celebración": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376771747
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793381009850
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793381291969
+      }
+    ],
+    "10.4 Semestres, detalle de semestre, onboarding y settings": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376772288
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793381320762
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793381704568
+      }
+    ],
+    "11. Verificación final y no regresión": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793376773115
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793381734409
+      },
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793383847761
+      }
+    ],
+    "3. Tema claro/oscuro (patrón idéntico al idioma)": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793378552236
+      }
+    ],
+    "5. Primitivos de UI en `components/ui`": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793379345830
+      }
+    ],
+    "7. Forecast de nota (tarjeta estrella) — lógica pura": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793380081859
+      }
+    ],
+    "10. Rediseño de pantallas (sin cambiar datos/callbacks)": [
+      {
+        "executionId": "cc5f756e-bd3e-4cdc-b86a-6f9955b7933a",
+        "chatSessionId": "sess_84e4fd3d-96ee-47a3-b1e0-ee199cef1eaf",
+        "timestamp": 1793381705140
+      }
+    ]
+  }
+}

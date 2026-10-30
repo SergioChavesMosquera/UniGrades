@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui";
 import { LogoutButton } from "@/components/LogoutButton";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/server";
 import { OnboardingClient } from "./OnboardingClient";
 
@@ -30,9 +29,6 @@ export default async function OnboardingPage() {
 
   return (
     <Container>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <LanguageSwitcher />
-      </div>
       <h1>{t("title")}</h1>
       <p style={{ color: "var(--muted)" }}>{t("subtitle")}</p>
 

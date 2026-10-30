@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { Button, Input } from "@/components/ui";
+import { AnimatedNumber, Button, Card, Input } from "@/components/ui";
 import {
   useAddComponent,
   useComponentGrades,
@@ -10,12 +10,15 @@ import {
   useDeleteComponent,
   useSubjectGrade,
 } from "@/services/queries";
+import { forecastRequiredGrade } from "@/lib/grade-forecast";
 import { ComponentGrades } from "./ComponentGrades";
 
 export function SubjectComponentsClient({
   materiaUsuarioId,
+  notaMinima,
 }: {
   materiaUsuarioId: string;
+  notaMinima: number;
 }) {
   const t = useTranslations("subjects");
   const { data: components, isLoading } = useComponents(materiaUsuarioId);
@@ -41,6 +44,19 @@ export function SubjectComponentsClient({
   for (const cg of componentGrades ?? []) {
     gradeByComponent.set(cg.componente_id, cg.calificacion);
   }
+
+  // Forecast de la "tarjeta estrella": qué nota se necesita en el peso restante.
+  const forecast = forecastRequiredGrade({
+    componentes: (components ?? []).map((c) => ({
+      id: c.id,
+      porcentaje: Number(c.porcentaje),
+    })),
+    calificaciones: (componentGrades ?? []).map((cg) => ({
+      componente_id: cg.componente_id,
+      calificacion: cg.calificacion,
+    })),
+    notaMinima,
+  });
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -73,11 +89,8 @@ export function SubjectComponentsClient({
       <p style={{ color: "var(--muted)" }}>{t("subtitle")}</p>
 
       {/* Nota de la materia (el "momento mágico": se calcula sola) */}
-      <div
+      <Card
         style={{
-          border: "2px solid var(--border)",
-          borderRadius: "var(--radius)",
-          padding: "16px",
           margin: "16px 0",
           display: "flex",
           justifyContent: "space-between",
@@ -85,15 +98,53 @@ export function SubjectComponentsClient({
         }}
       >
         <strong>{t("subjectGrade")}</strong>
-        <span style={{ fontSize: 28, fontWeight: 700 }}>{fmt(subjectGrade)}</span>
-      </div>
+        <span style={{ fontSize: 32, fontWeight: 700 }}>
+          {subjectGrade === null || subjectGrade === undefined ? (
+            <span className="num">{t("notYet")}</span>
+          ) : (
+            <AnimatedNumber value={subjectGrade} decimals={1} />
+          )}
+        </span>
+      </Card>
+
+      {/* Tarjeta estrella: proyección de nota necesaria */}
+      <Card
+        style={{
+          margin: "16px 0",
+          borderColor: "var(--brand-accent)",
+          borderWidth: 2,
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--space-xs)",
+        }}
+      >
+        <strong style={{ color: "var(--brand-primary)" }}>
+          {t("forecast.title")}
+        </strong>
+        <span style={{ color: "var(--muted)" }}>
+          {forecast.kind === "secured" ? (
+            t("forecast.secured")
+          ) : forecast.kind === "needed" ? (
+            t.rich("forecast.needed", {
+              required: () => (
+                <strong style={{ color: "var(--fg)" }}>
+                  <AnimatedNumber value={forecast.required} decimals={1} />
+                </strong>
+              ),
+            })
+          ) : forecast.kind === "impossible" ? (
+            t("forecast.impossible")
+          ) : forecast.kind === "incomplete_setup" ? (
+            t("forecast.incompleteSetup", { sum: forecast.sum })
+          ) : (
+            t("forecast.insufficient")
+          )}
+        </span>
+      </Card>
 
       {/* Indicador en vivo de la suma de porcentajes */}
-      <div
+      <Card
         style={{
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius)",
-          padding: "12px 16px",
           marginBottom: 16,
           display: "flex",
           justifyContent: "space-between",
@@ -101,12 +152,14 @@ export function SubjectComponentsClient({
         }}
       >
         <strong>
-          {t("sumLabel")}: {sum}%
+          {t("sumLabel")}: <span className="num">{sum}</span>%
         </strong>
-        <span style={{ color: sum === 100 ? "#000" : "var(--muted)" }}>
+        <span
+          style={{ color: sum === 100 ? "var(--brand-primary)" : "var(--muted)" }}
+        >
           {statusText}
         </span>
-      </div>
+      </Card>
 
       <form
         onSubmit={handleAdd}
@@ -140,34 +193,38 @@ export function SubjectComponentsClient({
         </Button>
       </form>
 
-      {error ? <p style={{ color: "#000", marginTop: 12 }}>⚠ {error}</p> : null}
+      {error ? (
+        <p style={{ color: "var(--brand-danger)", marginTop: 12 }}>⚠ {error}</p>
+      ) : null}
 
       {isLoading ? (
         <p style={{ color: "var(--muted)", marginTop: 24 }}>…</p>
       ) : !components || components.length === 0 ? (
         <p style={{ color: "var(--muted)", marginTop: 24 }}>{t("none")}</p>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0, marginTop: 24 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            marginTop: 24,
+          }}
+        >
           {components.map((c) => (
-            <li
-              key={c.id}
-              style={{
-                border: "1px solid var(--border)",
-                borderRadius: "var(--radius)",
-                padding: "12px 16px",
-                marginBottom: 12,
-              }}
-            >
+            <Card key={c.id}>
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  gap: 12,
+                  flexWrap: "wrap",
                 }}
               >
                 <span>
-                  <strong>{c.nombre}</strong> · {c.porcentaje}% ·{" "}
-                  {t("componentGrade")}: {fmt(gradeByComponent.get(c.id))}
+                  <strong>{c.nombre}</strong> ·{" "}
+                  <span className="num">{c.porcentaje}</span>% · {t("componentGrade")}
+                  : <span className="num">{fmt(gradeByComponent.get(c.id))}</span>
                 </span>
                 <Button
                   variant="secondary"
@@ -177,9 +234,9 @@ export function SubjectComponentsClient({
                 </Button>
               </div>
               <ComponentGrades componenteId={c.id} materiaUsuarioId={materiaUsuarioId} />
-            </li>
+            </Card>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

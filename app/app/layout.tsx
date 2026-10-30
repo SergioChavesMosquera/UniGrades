@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppNav } from "@/components/nav/AppNav";
 
 /**
  * Layout protegido de /app. Gate de sesión en server (defensa en profundidad
@@ -21,5 +22,10 @@ export default async function AppLayout({
     redirect("/login");
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <AppNav />
+      {children}
+    </>
+  );
 }

@@ -4,12 +4,23 @@
     "backHome": "← Volver al inicio",
     "language": "Idioma",
     "spanish": "Español",
-    "english": "Inglés"
+    "english": "Inglés",
+    "theme": "Tema",
+    "lightMode": "Claro",
+    "darkMode": "Oscuro"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "semesters": "Semestres",
+    "settings": "Ajustes",
+    "primary": "Navegación principal"
   },
   "landing": {
     "tagline": "Lleva el seguimiento de tus notas, promedios y avance académico en un solo lugar. Configura los componentes de cada materia y mira tu promedio por semestre y acumulado al instante.",
     "createAccount": "Crear cuenta",
-    "signIn": "Iniciar sesión"
+    "signIn": "Iniciar sesión",
+    "footerDisclaimer": "UniGrades no está afiliado a la Universidad Nacional de Colombia (UNAL). Es una herramienta personal e independiente del estudiante.",
+    "footerRights": "© {year} UniGrades"
   },
   "signup": {
     "title": "Crear cuenta",
@@ -100,6 +111,14 @@
     "configure": "Configurar evaluación",
     "subjectGrade": "Nota de la materia",
     "notYet": "—",
+    "forecast": {
+      "title": "¿Qué nota necesitas?",
+      "secured": "¡Ya la aseguraste! Con lo registrado, esta materia queda aprobada.",
+      "needed": "Necesitas <required></required> en promedio en lo que falta para aprobar.",
+      "impossible": "Con lo que queda ya no alcanza para aprobar esta materia.",
+      "incompleteSetup": "Configura los componentes hasta sumar 100% (van {sum}%) para ver tu proyección.",
+      "insufficient": "Agrega componentes para ver qué nota necesitas."
+    },
     "componentGrade": "Prom",
     "gradesTitle": "Notas",
     "gradeName": "Etiqueta",
@@ -135,5 +154,13 @@
     "credits": "créditos",
     "semester": "Sem.",
     "errorGeneric": "Algo salió mal. Intenta de nuevo."
+  },
+  "settings": {
+    "title": "Ajustes",
+    "subtitle": "Configura tu idioma, tema y revisa tu programa.",
+    "language": "Idioma",
+    "theme": "Tema",
+    "program": "Programa",
+    "noProgram": "Aún no has elegido un programa."
   }
 }

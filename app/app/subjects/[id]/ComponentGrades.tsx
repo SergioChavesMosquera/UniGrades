@@ -44,7 +44,13 @@ export function ComponentGrades({
   }
 
   return (
-    <div style={{ marginTop: 12, paddingLeft: 12, borderLeft: "2px solid var(--border)" }}>
+    <div
+      style={{
+        marginTop: 12,
+        paddingLeft: 12,
+        borderLeft: "2px solid var(--brand-accent)",
+      }}
+    >
       <strong style={{ fontSize: 13 }}>{t("gradesTitle")}</strong>
 
       <form
@@ -79,7 +85,9 @@ export function ComponentGrades({
         </Button>
       </form>
 
-      {error ? <p style={{ color: "#000", marginTop: 8 }}>⚠ {error}</p> : null}
+      {error ? (
+        <p style={{ color: "var(--brand-danger)", marginTop: 8 }}>⚠ {error}</p>
+      ) : null}
 
       {isLoading ? null : !grades || grades.length === 0 ? (
         <p style={{ color: "var(--muted)", marginTop: 8 }}>{t("noGrades")}</p>
@@ -96,7 +104,7 @@ export function ComponentGrades({
               }}
             >
               <span>
-                {g.nombre}: <strong>{g.valor}</strong>
+                {g.nombre}: <strong className="num">{g.valor}</strong>
               </span>
               <button
                 type="button"
@@ -104,6 +112,7 @@ export function ComponentGrades({
                 style={{
                   background: "none",
                   border: "none",
+                  color: "var(--fg)",
                   textDecoration: "underline",
                   cursor: "pointer",
                   fontSize: 13,

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/server";
 import { SemesterDetailClient } from "./SemesterDetailClient";
 
@@ -46,9 +45,6 @@ export default async function SemesterDetailPage({
 
   return (
     <Container>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <LanguageSwitcher />
-      </div>
       <p>
         <Link href="/app/semesters">{t("backToSemesters")}</Link>
       </p>

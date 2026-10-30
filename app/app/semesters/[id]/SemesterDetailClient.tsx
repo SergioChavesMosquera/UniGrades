@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { Button } from "@/components/ui";
+import { Button, Card, StatusBadge } from "@/components/ui";
+import { celebrate } from "@/lib/celebrate";
 import {
   useDeleteEnrollment,
   useEnrollSubject,
@@ -14,6 +15,21 @@ import {
 import type { EstadoMateria, Materia } from "@/types/domain";
 
 const ESTADOS: EstadoMateria[] = ["en_curso", "aprobada", "reprobada", "retirada"];
+
+/**
+ * Mapeo de estado de materia a estado visual del StatusBadge (icono + texto,
+ * nunca solo color — R7.5):
+ *   aprobada  → good   (menta)
+ *   en_curso  → good   (menta, va bien)
+ *   reprobada → behind (coral)
+ *   retirada  → risk   (ámbar)
+ */
+const ESTADO_BADGE: Record<EstadoMateria, "good" | "risk" | "behind"> = {
+  en_curso: "good",
+  aprobada: "good",
+  reprobada: "behind",
+  retirada: "risk",
+};
 
 export function SemesterDetailClient({
   userId,
@@ -60,46 +76,60 @@ export function SemesterDetailClient({
     }
   }
 
-  async function handleStateChange(id: string, nuevo: EstadoMateria) {
+  async function handleStateChange(
+    id: string,
+    nuevo: EstadoMateria,
+    previo: EstadoMateria
+  ) {
     setError(null);
     try {
       await updateState.mutateAsync({ id, estado: nuevo });
+      // Celebración SOLO en la transición real a "aprobada" (no al ver una ya
+      // aprobada): efecto de presentación, no altera datos ni el flujo (R11.5).
+      if (nuevo === "aprobada" && previo !== "aprobada") {
+        celebrate();
+      }
     } catch (err) {
       fail(err);
     }
   }
 
   const selectStyle = {
+    minHeight: "var(--tap-min)",
     padding: "10px 12px",
-    borderRadius: "var(--radius)",
+    borderRadius: "var(--radius-sm)",
     border: "1px solid var(--border)",
-    background: "#fff",
+    background: "var(--surface)",
+    color: "var(--fg)",
     fontSize: 14,
   } as const;
 
   return (
-    <div style={{ marginTop: 16 }}>
-      <div
+    <div style={{ marginTop: "var(--space-lg)" }}>
+      <Card
         style={{
-          border: "2px solid var(--border)",
-          borderRadius: "var(--radius)",
-          padding: "16px",
-          marginBottom: 24,
+          marginBottom: "var(--space-lg)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: "var(--space)",
         }}
       >
         <strong>{t("semesterAverage")}</strong>
-        <span style={{ fontSize: 28, fontWeight: 700 }}>
+        <span className="num" style={{ fontSize: 28, fontWeight: 700 }}>
           {semesterAvg ?? t("notYet")}
         </span>
-      </div>
+      </Card>
 
       <h2>{t("enrollTitle")}</h2>
       <form
         onSubmit={handleEnroll}
-        style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}
+        style={{
+          display: "flex",
+          gap: "var(--space-xs)",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
       >
         <select
           value={materiaId}
@@ -130,55 +160,95 @@ export function SemesterDetailClient({
         </Button>
       </form>
 
-      {error ? <p style={{ color: "#000", marginTop: 12 }}>⚠ {error}</p> : null}
+      {error ? (
+        <p style={{ color: "var(--brand-danger)", marginTop: 12 }}>⚠ {error}</p>
+      ) : null}
 
-      <h2 style={{ marginTop: 32 }}>{t("enrolled")}</h2>
+      <h2 style={{ marginTop: "var(--space-xl)" }}>{t("enrolled")}</h2>
       {isLoading ? (
         <p style={{ color: "var(--muted)" }}>…</p>
       ) : !enrollments || enrollments.length === 0 ? (
         <p style={{ color: "var(--muted)" }}>{t("noEnrollments")}</p>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-xs)",
+          }}
+        >
           {enrollments.map((en) => (
-            <li
+            <Card
               key={en.id}
+              as="li"
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                gap: 12,
-                border: "1px solid var(--border)",
-                borderRadius: "var(--radius)",
-                padding: "12px 16px",
-                marginBottom: 8,
+                gap: "var(--space)",
+                flexWrap: "wrap",
+                padding: "var(--space) var(--space-lg)",
               }}
             >
-              <span style={{ flex: 1 }}>
-                {en.materia?.nombre ?? "—"} · {en.materia?.creditos ?? 0} {t("credits")}
-              </span>
-              <Link href={`/app/subjects/${en.id}`}>
-                <Button variant="secondary">{ts("configure")}</Button>
-              </Link>
-              <select
-                value={en.estado}
-                onChange={(e) =>
-                  handleStateChange(en.id, e.target.value as EstadoMateria)
-                }
-                style={selectStyle}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-xs)",
+                  flexWrap: "wrap",
+                  flex: 1,
+                  minWidth: 0,
+                }}
               >
-                {ESTADOS.map((s) => (
-                  <option key={s} value={s}>
-                    {t(`estado.${s}`)}
-                  </option>
-                ))}
-              </select>
-              <Button
-                variant="secondary"
-                onClick={() => removeEnrollment.mutate(en.id)}
+                <StatusBadge
+                  status={ESTADO_BADGE[en.estado]}
+                  label={t(`estado.${en.estado}`)}
+                />
+                <span>
+                  {en.materia?.nombre ?? "—"} ·{" "}
+                  <span className="num">{en.materia?.creditos ?? 0}</span>{" "}
+                  {t("credits")}
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-xs)",
+                  flexWrap: "wrap",
+                }}
               >
-                {t("remove")}
-              </Button>
-            </li>
+                <Link href={`/app/subjects/${en.id}`}>
+                  <Button variant="secondary">{ts("configure")}</Button>
+                </Link>
+                <select
+                  value={en.estado}
+                  onChange={(e) =>
+                    handleStateChange(
+                      en.id,
+                      e.target.value as EstadoMateria,
+                      en.estado
+                    )
+                  }
+                  style={selectStyle}
+                >
+                  {ESTADOS.map((s) => (
+                    <option key={s} value={s}>
+                      {t(`estado.${s}`)}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  variant="secondary"
+                  onClick={() => removeEnrollment.mutate(en.id)}
+                >
+                  {t("remove")}
+                </Button>
+              </div>
+            </Card>
           ))}
         </ul>
       )}

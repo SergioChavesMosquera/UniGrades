@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/server";
 import { SemestersClient } from "./SemestersClient";
 
@@ -15,9 +14,6 @@ export default async function SemestersPage() {
 
   return (
     <Container>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <LanguageSwitcher />
-      </div>
       <p>
         <Link href="/app">{t("backToDashboard")}</Link>
       </p>

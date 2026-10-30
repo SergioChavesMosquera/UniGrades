@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui";
+import { Logo } from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SignupForm } from "./SignupForm";
 
@@ -13,12 +14,25 @@ export default function SignupPage() {
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <LanguageSwitcher />
       </div>
-      <h1>{t("title")}</h1>
-      <p style={{ color: "var(--muted)" }}>{t("subtitle")}</p>
+
+      <div style={{ marginTop: "var(--space-lg)" }}>
+        <Logo variant="horizontal" height={32} />
+      </div>
+
+      <h1
+        style={{
+          fontFamily: "var(--font-title)",
+          margin: "var(--space-lg) 0 var(--space-xs)",
+          color: "var(--fg)",
+        }}
+      >
+        {t("title")}
+      </h1>
+      <p style={{ margin: 0, color: "var(--muted)" }}>{t("subtitle")}</p>
 
       <SignupForm />
 
-      <p style={{ marginTop: 24, color: "var(--muted)" }}>
+      <p style={{ marginTop: "var(--space-lg)", color: "var(--muted)" }}>
         {t("haveAccount")} <Link href="/login">{t("goLogin")}</Link>
       </p>
       <p>

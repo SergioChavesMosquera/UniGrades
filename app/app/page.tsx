@@ -2,8 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Button, Container } from "@/components/ui";
-import { LogoutButton } from "@/components/LogoutButton";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardClient } from "./DashboardClient";
 
@@ -31,9 +29,6 @@ export default async function DashboardPage() {
 
   return (
     <Container>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <LanguageSwitcher />
-      </div>
       <h1>{t("title")}</h1>
       <p style={{ color: "var(--muted)" }}>
         {t("sessionAs", { email: perfil?.email ?? user?.email ?? "" })}
@@ -43,7 +38,6 @@ export default async function DashboardPage() {
         <Link href="/app/semesters">
           <Button variant="primary">{t("goSemesters")}</Button>
         </Link>
-        <LogoutButton />
       </div>
 
       {perfil?.programa_id ? (

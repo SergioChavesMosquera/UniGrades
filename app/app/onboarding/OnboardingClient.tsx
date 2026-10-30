@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { Button, Input } from "@/components/ui";
+import { Button, Card, Input } from "@/components/ui";
 import {
   useAddSubject,
   useCompleteOnboarding,
@@ -13,6 +13,18 @@ import {
 } from "@/services/queries";
 
 type Mode = "catalog" | "own";
+
+const selectStyle = {
+  marginTop: 4,
+  minHeight: "var(--tap-min)",
+  padding: "10px 12px",
+  borderRadius: "var(--radius-sm)",
+  border: "1px solid var(--border)",
+  background: "var(--surface)",
+  color: "var(--fg)",
+  fontSize: 14,
+  minWidth: 320,
+} as const;
 
 export function OnboardingClient({ userId }: { userId: string }) {
   const t = useTranslations("onboarding");
@@ -24,8 +36,10 @@ export function OnboardingClient({ userId }: { userId: string }) {
   }
 
   return (
-    <div style={{ marginTop: 16 }}>
-      <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+    <div style={{ marginTop: "var(--space-lg)" }}>
+      <div
+        style={{ display: "flex", gap: "var(--space-xs)", marginBottom: "var(--space-lg)" }}
+      >
         <Button
           variant={mode === "catalog" ? "primary" : "secondary"}
           onClick={() => setMode("catalog")}
@@ -46,7 +60,11 @@ export function OnboardingClient({ userId }: { userId: string }) {
         <OwnMode userId={userId} onError={fail} />
       )}
 
-      {error ? <p style={{ color: "#000", marginTop: 16 }}>⚠ {error}</p> : null}
+      {error ? (
+        <p style={{ color: "var(--brand-danger)", marginTop: "var(--space)" }}>
+          ⚠ {error}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -84,22 +102,14 @@ function CatalogMode({
     return <p style={{ color: "var(--muted)" }}>{t("noPrograms")}</p>;
 
   return (
-    <div>
-      <label style={{ display: "block", marginBottom: 16 }}>
+    <Card style={{ maxWidth: 520 }}>
+      <label style={{ display: "block", marginBottom: "var(--space)" }}>
         <span style={{ fontSize: 13 }}>{t("selectProgram")}</span>
         <br />
         <select
           value={selected ?? ""}
           onChange={(e) => setSelected(e.target.value || null)}
-          style={{
-            marginTop: 4,
-            padding: "10px 12px",
-            borderRadius: "var(--radius)",
-            border: "1px solid var(--border)",
-            background: "#fff",
-            fontSize: 14,
-            minWidth: 320,
-          }}
+          style={selectStyle}
         >
           <option value="">—</option>
           {programs.map((p) => (
@@ -112,13 +122,13 @@ function CatalogMode({
       </label>
 
       {selected && subjects ? (
-        <div style={{ marginBottom: 16 }}>
+        <div style={{ marginBottom: "var(--space)" }}>
           <strong>{t("subjectsPreview")}</strong>
           <ul style={{ marginTop: 8, maxHeight: 260, overflow: "auto" }}>
             {subjects.map((s) => (
               <li key={s.id}>
                 {s.semestre_sugerido ? `[${t("semester")} ${s.semestre_sugerido}] ` : ""}
-                {s.nombre} · {s.creditos} {t("credits")}
+                {s.nombre} · <span className="num">{s.creditos}</span> {t("credits")}
               </li>
             ))}
           </ul>
@@ -132,7 +142,7 @@ function CatalogMode({
       >
         {complete.isPending ? t("finishing") : t("useThisProgram")}
       </Button>
-    </div>
+    </Card>
   );
 }
 
@@ -209,58 +219,69 @@ function OwnMode({
 
   if (!created) {
     return (
-      <form onSubmit={doCreateProgram} style={{ maxWidth: 420 }}>
-        <Input
-          id="uni"
-          label={t("ownUniversity")}
-          value={uni}
-          onChange={(e) => setUni(e.target.value)}
-          placeholder={t("ownUniversityPh")}
-          required
-        />
-        <Input
-          id="prog"
-          label={t("ownProgram")}
-          value={prog}
-          onChange={(e) => setProg(e.target.value)}
-          placeholder={t("ownProgramPh")}
-          required
-        />
-        <p style={{ color: "var(--muted)", fontSize: 13 }}>
-          {t("createProgramFirst")}
-        </p>
-        <Button type="submit" variant="primary" disabled={createProgram.isPending}>
-          {t("createProgram")}
-        </Button>
-      </form>
+      <Card style={{ maxWidth: 420 }}>
+        <form onSubmit={doCreateProgram}>
+          <Input
+            id="uni"
+            label={t("ownUniversity")}
+            value={uni}
+            onChange={(e) => setUni(e.target.value)}
+            placeholder={t("ownUniversityPh")}
+            required
+          />
+          <Input
+            id="prog"
+            label={t("ownProgram")}
+            value={prog}
+            onChange={(e) => setProg(e.target.value)}
+            placeholder={t("ownProgramPh")}
+            required
+          />
+          <p style={{ color: "var(--muted)", fontSize: 13 }}>
+            {t("createProgramFirst")}
+          </p>
+          <Button type="submit" variant="primary" disabled={createProgram.isPending}>
+            {t("createProgram")}
+          </Button>
+        </form>
+      </Card>
     );
   }
 
   return (
-    <div style={{ maxWidth: 420 }}>
-      <form onSubmit={doAddSubject}>
-        <Input
-          id="subjName"
-          label={t("subjectName")}
-          value={subjName}
-          onChange={(e) => setSubjName(e.target.value)}
-          required
-        />
-        <Input
-          id="subjCredits"
-          label={t("subjectCredits")}
-          type="number"
-          min={0}
-          value={subjCredits}
-          onChange={(e) => setSubjCredits(Number(e.target.value))}
-          required
-        />
-        <Button type="submit" variant="secondary" disabled={addSubj.isPending}>
-          {t("addSubject")}
-        </Button>
-      </form>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--space-lg)",
+        maxWidth: 420,
+      }}
+    >
+      <Card>
+        <form onSubmit={doAddSubject}>
+          <Input
+            id="subjName"
+            label={t("subjectName")}
+            value={subjName}
+            onChange={(e) => setSubjName(e.target.value)}
+            required
+          />
+          <Input
+            id="subjCredits"
+            label={t("subjectCredits")}
+            type="number"
+            min={0}
+            value={subjCredits}
+            onChange={(e) => setSubjCredits(Number(e.target.value))}
+            required
+          />
+          <Button type="submit" variant="secondary" disabled={addSubj.isPending}>
+            {t("addSubject")}
+          </Button>
+        </form>
+      </Card>
 
-      <div style={{ marginTop: 24 }}>
+      <Card>
         <strong>{t("yourSubjects")}</strong>
         {subjects.length === 0 ? (
           <p style={{ color: "var(--muted)" }}>{t("noSubjectsYet")}</p>
@@ -268,14 +289,14 @@ function OwnMode({
           <ul style={{ marginTop: 8 }}>
             {subjects.map((s, i) => (
               <li key={i}>
-                {s.nombre} · {s.creditos} {t("credits")}
+                {s.nombre} · <span className="num">{s.creditos}</span> {t("credits")}
               </li>
             ))}
           </ul>
         )}
-      </div>
+      </Card>
 
-      <div style={{ marginTop: 24 }}>
+      <div>
         <Button
           variant="primary"
           onClick={finish}

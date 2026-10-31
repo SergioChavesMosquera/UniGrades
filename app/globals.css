@@ -271,3 +271,18 @@ p {
     animation-iteration-count: 1 !important;
   }
 }
+  ::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;}
+
+/* Entrada del menú del selector de idioma (LanguageSwitcher) */
+@keyframes ug-lang-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

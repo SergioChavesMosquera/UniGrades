@@ -3,27 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CalendarDays, LayoutDashboard, Settings } from "lucide-react";
+import { useState } from "react";
+import { CalendarDays, LayoutDashboard, Settings, Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LogoutButton } from "@/components/LogoutButton";
-import { Dock, DockIcon } from "@/components/ui/dock";
-
-/**
- * Barra de navegación del área autenticada (/app). Componente "tonto": solo
- * enlaces y los controles presentacionales/acciones ya existentes
- * (LanguageSwitcher, ThemeToggle, LogoutButton) sin introducir lógica de datos
- * nueva (R12.6).
- *
- * Es un client component porque la detección de sección activa usa
- * usePathname (R12.3). El gate de sesión sigue viviendo en el server component
- * app/app/layout.tsx; este componente solo se monta por encima de {children}.
- *
- * Mobile-first: barra apilada y compacta en móvil, se expande en fila a ≥640px.
- * Todos los objetivos táctiles alcanzan --tap-min (44px) y no hay scroll
- * horizontal a 360px gracias a flex-wrap (R12.5).
- */
+import { AppThemeToggler } from "@/components/theme/AppThemeToggler";
 
 const LINKS = [
   { href: "/app", key: "dashboard", Icon: LayoutDashboard },
@@ -31,11 +16,6 @@ const LINKS = [
   { href: "/app/settings", key: "settings", Icon: Settings },
 ] as const;
 
-/**
- * Una sección está activa cuando la ruta coincide exactamente o es una
- * subruta. "/app" es el dashboard: solo activo en coincidencia exacta para no
- * marcarse en cada subruta de /app.
- */
 function isActive(pathname: string, href: string): boolean {
   if (href === "/app") return pathname === "/app";
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -44,96 +24,109 @@ function isActive(pathname: string, href: string): boolean {
 export function AppNav() {
   const t = useTranslations("nav");
   const pathname = usePathname() ?? "";
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header
-      style={{
-        background: "var(--surface)",
-        borderBottom: "1px solid var(--border)",
-        boxShadow: "var(--shadow-soft)",
-      }}
-    >
-      <nav
-        aria-label={t("primary")}
-        style={{
-          maxWidth: "var(--max-width)",
-          margin: "0 auto",
-          padding: "var(--space-xs) var(--space)",
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: "var(--space-xs)",
-        }}
-      >
-        <Link
-          href="/app"
-          aria-label="unigrades"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            minHeight: "var(--tap-min)",
-            textDecoration: "none",
-            flex: "0 0 auto",
-          }}
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/90 px-4 py-3 backdrop-blur-md dark:border-[#272e38] dark:bg-[#0b0f14]/90">
+        <nav
+          aria-label={t("primary")}
+          className="mx-auto flex max-w-[1200px] items-center justify-between"
         >
-          <Logo variant="horizontal" height={24} />
-        </Link>
+          {/* 1. Logo */}
+          <Logo variant="horizontal" height={32} />
 
-        {/* Enlaces de sección en un Dock (MagicUI): magnificación al pasar el
-            cursor en escritorio; en móvil/tap sigue siendo táctil (≥44px) y
-            cada enlace mantiene etiqueta textual + indicador de sección activa
-            (no solo color, R12.3). Mismos links y labels i18n de antes. */}
-        <Dock
-          className="mx-0 mt-0 flex-1 justify-start border-[var(--border)] bg-transparent backdrop-blur-none"
-          iconSize={40}
-          iconMagnification={52}
-          iconDistance={120}
-        >
-          {LINKS.map(({ href, key, Icon }) => {
-            const active = isActive(pathname, href);
-            return (
-              <DockIcon key={href} className="aspect-auto rounded-[var(--radius-sm)]">
-                <Link
-                  href={href}
-                  aria-current={active ? "page" : undefined}
-                  title={t(key)}
-                  className="inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap px-2"
-                  style={{
-                    borderRadius: "var(--radius-sm)",
-                    textDecoration: active ? "underline" : "none",
-                    textUnderlineOffset: 4,
-                    fontWeight: active ? 700 : 500,
-                    color: active ? "var(--primary)" : "var(--fg)",
-                  }}
-                >
-                  <Icon size={18} aria-hidden="true" />
-                  <span>{t(key)}</span>
-                  {/* Indicador textual de sección activa (no solo color, R12.3). */}
-                  {active ? (
-                    <span aria-hidden="true" style={{ color: "var(--primary)" }}>
-                      •
-                    </span>
-                  ) : null}
-                </Link>
-              </DockIcon>
-            );
-          })}
-        </Dock>
+          {/* 2. Enlaces de Escritorio */}
+          <ul className="hidden items-center gap-8 text-[14px] font-semibold md:flex">
+            {LINKS.map(({ href, key, Icon }) => {
+              const active = isActive(pathname, href);
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className={`group relative flex items-center gap-2 py-2 transition-all duration-300 ${
+                      active
+                        ? "text-[#0b6b4f] dark:text-[#2ed8a3]"
+                        : "text-gray-600 hover:text-gray-900 dark:text-[#9aa7b2] dark:hover:text-[#f7f8f5]"
+                    }`}
+                  >
+                    <Icon size={18} />
+                    <span>{t(key)}</span>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            gap: "var(--space-xs)",
-            flex: "0 1 auto",
-          }}
-        >
-          <LanguageSwitcher />
-          <ThemeToggle />
-          <LogoutButton />
+                    <span
+                      className={`absolute -bottom-1 left-0 h-[2px] rounded-full transition-all duration-500 ${
+                        active
+                          ? "w-full bg-[#0b6b4f] opacity-100 shadow-[0_0_8px_rgba(11,107,79,0.5)] dark:bg-[#2ed8a3] dark:shadow-[0_0_8px_#2ed8a3]"
+                          : "w-0 bg-[#0b6b4f] opacity-0 group-hover:w-full group-hover:opacity-100 dark:bg-[#2ed8a3]"
+                      }`}
+                    />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* 3. Controles de Escritorio + Menú Hamburguesa */}
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-2 md:flex">
+              <LanguageSwitcher />
+              <AppThemeToggler variant="square" />
+              <div className="ml-2 border-l border-gray-200 pl-4 dark:border-[#272e38]">
+                <LogoutButton />
+              </div>
+            </div>
+
+            {/* Botón de Hamburguesa */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:border-[#0b6b4f] hover:text-[#0b6b4f] dark:border-[#272e38] dark:text-[#f7f8f5] dark:hover:border-[#2ed8a3] dark:hover:text-[#2ed8a3] md:hidden"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      {/* 4. Menú Móvil */}
+      {menuOpen && (
+        <div className="fixed inset-0 top-[65px] z-40 flex flex-col bg-white/95 px-6 py-8 backdrop-blur-md dark:bg-[#0b0f14]/95 md:hidden">
+          <ul className="flex flex-col gap-6">
+            {LINKS.map(({ href, key, Icon }) => {
+              const active = isActive(pathname, href);
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`flex items-center gap-4 text-xl font-bold transition-colors ${
+                      active
+                        ? "text-[#0b6b4f] dark:text-[#2ed8a3]"
+                        : "text-gray-700 hover:text-gray-900 dark:text-[#9aa7b2] dark:hover:text-[#f7f8f5]"
+                    }`}
+                  >
+                    <Icon size={24} />
+                    {t(key)}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="mt-auto flex flex-col gap-6 border-t border-gray-200 pt-6 dark:border-[#272e38]">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-500 dark:text-[#9aa7b2]">
+                Configuración
+              </span>
+              <div className="flex items-center gap-2">
+                <LanguageSwitcher />
+                <AppThemeToggler variant="square" />
+              </div>
+            </div>
+            <LogoutButton />
+          </div>
         </div>
-      </nav>
-    </header>
+      )}
+    </>
   );
 }

@@ -1,78 +1,49 @@
-import type { CSSProperties } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
-type LogoVariant = "symbol" | "horizontal" | "mono";
-
-type LogoProps = {
-  /** Variante del logo: símbolo compacto, wordmark completo o monocromo. */
-  variant: LogoVariant;
-  /** Alto en px. Se fuerza un mínimo de 24px (R9.2). */
+interface LogoProps {
   height?: number;
-};
-
-/** Alto mínimo del logo en px (R9.2). */
-const MIN_HEIGHT = 24;
-
-/** Nombre de marca. No es copy de UI, así que NO pasa por i18n. */
-const WORDMARK = "unigrades";
+  /** "horizontal" = icono + nombre; "icon" = solo el icono. */
+  variant?: "horizontal" | "icon";
+  className?: string;
+  href?: string;
+}
 
 /**
- * Componente de logo presentacional ("tonto").
+ * Logo de UniGrades: icono cuadrado + nombre de marca.
  *
- * Mientras no existan los assets finales de marca, renderiza un placeholder
- * consistente: el wordmark "unigrades" en la fuente de títulos (Sora) para no
- * romper el layout (R9.3). Cuando lleguen los assets, basta reemplazar el
- * contenido interno manteniendo esta misma firma de props.
- *
- * Variantes:
- * - symbol: marca compacta (primera letra "u") en color de marca.
- * - horizontal: wordmark completo en color de marca.
- * - mono: wordmark completo en `currentColor` para adaptarse al contexto.
- *
- * Respeta una "zona de respeto" (espacio libre alrededor) proporcional al alto.
+ * El nombre usa la fuente de títulos del proyecto (Sora, vía --font-title),
+ * negrita y tracking apretado. En hover el icono gira levemente y el nombre
+ * pasa al verde de marca (menta en oscuro). Mismo patrón que la navbar guía.
  */
-export function Logo({ variant, height = MIN_HEIGHT }: LogoProps) {
-  const safeHeight = Math.max(MIN_HEIGHT, height);
-
-  // La tipografía escala relativa al alto; la zona de respeto es ~25% del alto.
-  const fontSize = Math.round(safeHeight * 0.6);
-  const clearSpace = Math.round(safeHeight * 0.25);
-
-  const isMono = variant === "mono";
-  const color = isMono ? "currentColor" : "var(--brand-primary)";
-
-  const wrapperStyle: CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    height: safeHeight,
-    padding: clearSpace,
-    boxSizing: "content-box",
-    color,
-    fontFamily: "var(--font-title)",
-    fontWeight: 700,
-    fontSize,
-    lineHeight: 1,
-    letterSpacing: "-0.02em",
-    userSelect: "none",
-    whiteSpace: "nowrap",
-  };
-
-  if (variant === "symbol") {
-    const symbolStyle: CSSProperties = {
-      ...wrapperStyle,
-      justifyContent: "center",
-      width: safeHeight,
-      padding: clearSpace,
-    };
-    return (
-      <span role="img" aria-label={WORDMARK} style={symbolStyle}>
-        {WORDMARK.charAt(0)}
-      </span>
-    );
-  }
-
+export function Logo({
+  height = 40,
+  variant = "horizontal",
+  className = "",
+  href = "/",
+}: LogoProps) {
   return (
-    <span role="img" aria-label={WORDMARK} style={wrapperStyle}>
-      {WORDMARK}
-    </span>
+    <Link href={href} className={`group flex items-center gap-2.5 ${className}`}>
+      <Image
+        src="/images/icon.png"
+        alt="UniGrades"
+        width={height}
+        height={height}
+        priority
+        className="rounded-lg object-contain transition-transform duration-500 ease-out group-hover:rotate-12"
+        style={{ height: `${height}px`, width: `${height}px` }}
+      />
+      {variant === "horizontal" && (
+        <span
+          className="font-bold tracking-tighter text-gray-900 transition-colors duration-300 group-hover:text-[#0b6b4f] dark:text-white dark:group-hover:text-[#2ed8a3]"
+          style={{
+            fontFamily: "var(--font-title, var(--font-sans))",
+            fontSize: `${Math.round(height * 0.5)}px`,
+          }}
+        >
+          UniGrades
+        </span>
+      )}
+    </Link>
   );
 }
